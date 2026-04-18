@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Clivus · Practice Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#003C58;--navy-dark:#002840;--navy-deep:#001E30;
+  --gold:#ECC11C;--gold-dim:#B4920A;--gold-pale:#F5E49A;
+  --cream:#F8F4EC;--muted:#7A7060;--green:#1D9E75;
+  --red:#C0392B;--amber:#BA7517;--purple:#534AB7;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--navy-deep);color:var(--cream);font-family:'EB Garamond',Georgia,serif;font-size:15px;display:flex;flex-direction:column}
+.masthead{background:var(--navy-dark);border-bottom:1px solid rgba(236,193,28,.3);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.wordmark{font-family:'Cinzel Decorative',serif;font-size:17px;color:var(--gold);letter-spacing:.04em}
+.tagline{font-family:'EB Garamond',serif;font-style:italic;font-size:11px;color:var(--gold-dim)}
+.masthead-right{text-align:right}
+#live-time{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);display:block}
+.live-date{font-size:10px;color:var(--muted);letter-spacing:.04em}
+.nav-tabs{background:var(--navy-dark);border-bottom:1px solid rgba(236,193,28,.15);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 4px;flex-shrink:0}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;padding:9px 12px;cursor:pointer;white-space:nowrap;transition:all .2s;text-transform:uppercase}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(236,193,28,.15) transparent}
+.panel{display:none;padding:14px 14px 80px;max-width:680px;margin:0 auto}
+.panel.active{display:block}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(236,193,28,.12);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.card-gold{background:rgba(236,193,28,.06);border-color:rgba(236,193,28,.25)}
+.card-alert{border-left:3px solid var(--amber);background:rgba(186,117,23,.08)}
+.card-success{border-left:3px solid var(--green);background:rgba(29,158,117,.07)}
+.card-info{border-left:3px solid #185FA5;background:rgba(24,95,165,.08)}
+.card-trainer{border-left:3px solid #1D9E75;background:rgba(29,158,117,.06)}
+.sec-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:7px;margin-top:16px}
+.sec-label:first-child{margin-top:0}
+.stat-grid{display:grid;gap:7px;margin-bottom:10px}
+.sg3{grid-template-columns:repeat(3,1fr)}.sg4{grid-template-columns:repeat(4,1fr)}.sg2{grid-template-columns:repeat(2,1fr)}
+.stat-box{background:rgba(255,255,255,.04);border:1px solid rgba(236,193,28,.1);border-radius:8px;padding:9px 8px;text-align:center}
+.stat-n{font-family:'Cinzel',serif;font-size:20px;color:var(--gold);line-height:1;display:block}
+.stat-l{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.2}
+.cdown{background:rgba(236,193,28,.06);border:1px solid rgba(236,193,28,.2);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.cdown-n{font-family:'Cinzel',serif;font-size:34px;color:var(--gold);line-height:1}
+.cdown-l{font-size:11px;color:var(--muted);margin-top:3px;font-style:italic}
+.cdown-right{text-align:right;font-size:11px;color:var(--muted);line-height:1.7}
+.ev-row{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.ev-row:last-child{border-bottom:none;padding-bottom:0}
+.ev-dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.ev-time{font-size:11px;color:var(--muted);min-width:46px;padding-top:1px;font-style:italic;flex-shrink:0}
+.ev-body{flex:1;min-width:0}
+.ev-title{font-size:13px;color:var(--cream);line-height:1.3}
+.ev-sub{font-size:11px;color:var(--muted);margin-top:1px;font-style:italic}
+.pill{display:inline-block;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.05em;padding:2px 7px;border-radius:20px;margin-top:3px;white-space:nowrap}
+.p-gold{background:rgba(236,193,28,.12);color:var(--gold);border:1px solid rgba(236,193,28,.3)}
+.p-green{background:rgba(29,158,117,.15);color:#1D9E75;border:1px solid rgba(29,158,117,.3)}
+.p-amber{background:rgba(186,117,23,.15);color:#E8A030;border:1px solid rgba(186,117,23,.3)}
+.p-red{background:rgba(192,57,43,.12);color:#E24B4A;border:1px solid rgba(192,57,43,.25)}
+.p-purple{background:rgba(83,74,183,.15);color:#AFA9EC;border:1px solid rgba(83,74,183,.3)}
+.p-navy{background:rgba(0,60,88,.5);color:var(--cream);border:1px solid rgba(255,255,255,.12)}
+.p-blue{background:rgba(24,95,165,.15);color:#85B7EB;border:1px solid rgba(24,95,165,.3)}
+.p-teal{background:rgba(29,158,117,.15);color:#5DCAA5;border:1px solid rgba(29,158,117,.25)}
+.check-item{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer}
+.check-item:last-child{border-bottom:none}
+.cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--gold-dim);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cb.chk{background:var(--green);border-color:var(--green)}
+.cb.chk::after{content:'✓';font-size:10px;color:white;font-family:sans-serif;line-height:1}
+.ci-text{font-size:13px;color:var(--cream);line-height:1.4;flex:1}
+.ci-text.done{text-decoration:line-through;color:var(--muted)}
+.pip-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.pip-row:last-child{border-bottom:none}
+.pip-name{font-size:13px;color:var(--cream)}
+.pip-co{font-size:11px;color:var(--muted);font-style:italic}
+.pip-del{color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px}
+.fi{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:8px 11px;color:var(--cream);font-family:'EB Garamond',serif;font-size:14px;outline:none;margin-bottom:7px}
+.fi:focus{border-color:rgba(236,193,28,.4)}
+.fi::placeholder{color:var(--muted)}
+.fi option{background:var(--navy-dark)}
+.btn{display:block;width:100%;background:rgba(236,193,28,.08);border:1px solid rgba(236,193,28,.22);border-radius:8px;padding:10px 13px;color:var(--cream);font-family:'EB Garamond',serif;font-size:13px;cursor:pointer;text-align:left;margin-bottom:7px;transition:background .15s}
+.btn:hover{background:rgba(236,193,28,.14)}
+.btn small{display:block;font-size:11px;color:var(--muted);margin-top:1px;font-style:italic}
+.btn:last-child{margin-bottom:0}
+/* TICKET ROWS */
+.tr{display:flex;align-items:center;gap:8px;padding:8px 11px;background:rgba(255,255,255,.03);border:1px solid rgba(236,193,28,.08);border-radius:8px;margin-bottom:5px;cursor:pointer;transition:background .12s}
+.tr:hover{background:rgba(255,255,255,.06)}
+.tr.tr-alert{border-left:3px solid var(--amber)}
+.tr.tr-dim{opacity:.55}
+.tr.tr-client-row{border-left:3px solid var(--green)}
+.tr-num{font-family:'Cinzel',serif;font-size:10px;color:var(--gold-dim);min-width:22px;flex-shrink:0}
+.tr-date{min-width:62px;flex-shrink:0}
+.tr-date strong{display:block;font-size:11px;color:var(--cream);font-family:'Cinzel',serif;font-weight:400}
+.tr-date span{font-size:10px;color:var(--muted);font-style:italic}
+.tr-opp{flex:1;min-width:0}
+.tr-opp strong{font-size:12px;color:var(--cream);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mhdr{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--gold-dim);text-transform:uppercase;padding:10px 0 5px;border-bottom:1px solid rgba(236,193,28,.08);margin-bottom:5px}
+.mhdr:first-child{padding-top:0}
+.prog-wrap{background:rgba(255,255,255,.06);border-radius:4px;height:5px;overflow:hidden;margin:6px 0 3px}
+.prog-bar{background:var(--gold);height:100%;border-radius:4px;transition:width .3s}
+.t-strip{background:rgba(186,117,23,.1);border:1px solid rgba(236,193,28,.18);border-radius:8px;padding:9px 12px;margin-bottom:10px;display:flex;gap:9px;align-items:flex-start;font-size:12px;color:var(--gold-pale)}
+.div{height:1px;background:rgba(236,193,28,.08);margin:12px 0}
+.vw-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.vw-row:last-child{border-bottom:none}
+.vw-date{font-size:11px;color:var(--muted);min-width:60px;font-style:italic;flex-shrink:0;padding-top:2px}
+.vw-body{flex:1}
+.vw-title{font-size:12px;color:var(--cream)}
+.vw-time{font-size:10px;color:var(--muted);font-style:italic}
+/* TAX LOG TABLE */
+.tax-table{width:100%;border-collapse:collapse;font-size:12px}
+.tax-table th{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:var(--gold-dim);text-align:left;padding:5px 8px;border-bottom:1px solid rgba(236,193,28,.15)}
+.tax-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--cream);vertical-align:top}
+.tax-table tr:last-child td{border-bottom:none}
+.tax-table .tg-muted{color:var(--muted);font-style:italic}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,20,40,.88);z-index:200;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--navy-dark);border:1px solid rgba(236,193,28,.3);border-bottom:none;border-radius:16px 16px 0 0;padding:18px 18px 36px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto}
+.modal-handle{width:34px;height:3px;background:rgba(255,255,255,.18);border-radius:2px;margin:0 auto 14px}
+.modal-title{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:3px}
+.modal-sub{font-size:11px;color:var(--muted);font-style:italic;margin-bottom:14px;line-height:1.5}
+.modal-section{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-dim);margin:12px 0 7px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.mopt{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.04em;color:var(--cream);cursor:pointer;text-align:center;transition:all .12s}
+.mopt:hover{background:rgba(236,193,28,.08);border-color:rgba(236,193,28,.25)}
+.mopt.sel{border-color:var(--gold);color:var(--gold);background:rgba(236,193,28,.1)}
+.modal-close{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;color:var(--muted);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;cursor:pointer;text-transform:uppercase;margin-top:10px}
+/* TRAINER DRAFT MSG */
+.draft-strip{background:rgba(29,158,117,.08);border:1px solid rgba(29,158,117,.2);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;color:#9FE1CB;line-height:1.6;display:none}
+.draft-strip.show{display:block}
+/* ATTENDEE FIELD */
+.attn-wrap{margin-bottom:8px}
+.attn-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:var(--gold-dim);margin-bottom:4px;display:block}
+.attn-fi{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:7px 10px;color:var(--cream);font-family:'EB Garamond',serif;font-size:13px;outline:none}
+.attn-fi:focus{border-color:rgba(236,193,28,.35)}
+.attn-fi::placeholder{color:var(--muted);font-style:italic}
+/* BIZ TOGGLE */
+.biz-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.biz-label{font-size:13px;color:var(--cream)}
+.biz-sub{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px}
+.toggle{width:36px;height:20px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);position:relative;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--green);border-color:var(--green)}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:white;top:2px;left:2px;transition:left .2s}
+.toggle.on::after{left:18px}
+/* PURPOSE FIELD */
+.purpose-wrap{display:none;margin-bottom:8px}
+.purpose-wrap.show{display:block}
+/* GCAL CONNECT */
+.gcal-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(24,95,165,.08);border:1px solid rgba(24,95,165,.2);border-radius:8px;padding:9px 12px;margin-bottom:10px;gap:10px}
+.gcal-status{font-size:11px;color:var(--muted);font-style:italic;flex:1}
+.gcal-status.connected{color:#5DCAA5}
+.gcal-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;background:rgba(24,95,165,.15);border:1px solid rgba(24,95,165,.35);border-radius:6px;padding:5px 10px;color:#85B7EB;cursor:pointer;white-space:nowrap;transition:background .15s}
+.gcal-btn:hover{background:rgba(24,95,165,.28)}
+.gcal-btn.disconnect{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.1);color:var(--muted)}
+.gcal-event-badge{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.04em;background:rgba(24,95,165,.18);color:#85B7EB;border:1px solid rgba(24,95,165,.3);border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle}
+.gcal-setup{background:rgba(24,95,165,.06);border:1px solid rgba(24,95,165,.18);border-radius:10px;padding:13px 14px;margin-bottom:10px;font-size:12px;color:var(--cream);line-height:1.7}
+.gcal-setup strong{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;color:#85B7EB;display:block;margin-bottom:6px}
+.gcal-setup code{background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px;font-size:11px;color:var(--gold-pale);font-family:monospace}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div>
+    <div class="wordmark">Clivus</div>
+    <div class="tagline">Via Ascensus · Practice Manager</div>
+  </div>
+  <div class="masthead-right">
+    <span id="live-time"></span>
+    <span class="live-date" id="live-date"></span>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="sw('today',this)">Today</button>
+  <button class="tab-btn" onclick="sw('calendar',this)">Calendar</button>
+  <button class="tab-btn" onclick="sw('vistage',this)">Vistage</button>
+  <button class="tab-btn" onclick="sw('practice',this)">Practice</button>
+  <button class="tab-btn" onclick="sw('rangers',this)">Rangers</button>
+  <button class="tab-btn" onclick="sw('taxlog',this)">Tax Log</button>
+  <button class="tab-btn" onclick="sw('travel',this)">Travel</button>
+  <button class="tab-btn" onclick="sw('guide',this)">Guide</button>
+</div>
+
+<div class="scroll-area">
+
+<!-- TODAY — fully dynamic, rendered by buildToday() -->
+<div id="tab-today" class="panel active">
+  <div class="cdown">
+    <div>
+      <div class="cdown-n" id="days-launch">—</div>
+      <div class="cdown-l">days to CE group launch · Aug 1, 2026</div>
+    </div>
+    <div class="cdown-right">Academy 1: Apr 20–24<br>Academy 2: Jun 25–26<br>Launch: Aug 1 🎯</div>
+  </div>
+  <div id="gcal-bar" class="gcal-bar">
+    <span class="gcal-status" id="gcal-status">📅 Google Calendar not connected</span>
+    <button class="gcal-btn" id="gcal-btn" onclick="gcalAction()">Connect</button>
+  </div>
+  <div id="gcal-setup-hint" class="gcal-setup" style="display:none">
+    <strong>One-time setup required</strong>
+    To connect Google Calendar, you need a free Google API client ID.<br>
+    1. Go to <code>console.cloud.google.com</code> → New Project → APIs &amp; Services → Enable <em>Google Calendar API</em><br>
+    2. Credentials → Create OAuth Client ID → Web Application → add <code>file://</code> and your local path as Authorized Origins<br>
+    3. Paste your Client ID below and tap Save.<br><br>
+    <input class="attn-fi" id="gcal-client-id-input" placeholder="Paste Google OAuth Client ID here…" style="margin-bottom:7px">
+    <button class="gcal-btn" onclick="saveClientId()" style="width:100%;text-align:center;padding:8px">Save Client ID &amp; Connect</button>
+  </div>
+  <div id="today-dynamic"></div>
+</div>
+
+<!-- CALENDAR -->
+<div id="tab-calendar" class="panel">
+  <div class="t-strip"><div style="font-size:18px">✈</div><div><strong>Como/Amsterdam</strong> Apr 6–15 &nbsp;·&nbsp; <strong>Chair Academy</strong> Apr 19–24 San Diego<br><span style="font-size:11px;opacity:.7">Continuous travel Apr 6–24 · notify Patrick for all training conflicts</span></div></div>
+  <div class="sec-label">April 2026</div>
+  <div class="card">
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-time">Sat Apr 4</div><div class="ev-body"><div class="ev-title">⚾ B1 · Rangers vs Reds · 6:05p · With Tom</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#1D9E75"></div><div class="ev-time">Mon Apr 6</div><div class="ev-body"><div class="ev-title">⚾ B2 · Rangers vs Mariners · 7:05p · Client gift</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Mon Apr 6</div><div class="ev-body"><div class="ev-title">✈ Depart DFW → London AA 20 · 4:55p</div><div class="ev-sub">Business · 13D/13G</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Tue Apr 7</div><div class="ev-body"><div class="ev-title">LHR → Milan · Villa d'Este check-in · Grill dinner</div><div class="ev-sub">Conf: 6789SG152489</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#7F77DD"></div><div class="ev-time">Wed Apr 8</div><div class="ev-body"><div class="ev-title">⚾ B3 · Rangers vs Mariners · 1:35p · Sold SeatGeek</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Wed Apr 8</div><div class="ev-body"><div class="ev-title">Dinner · Materia · 7:45p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#ECC11C"></div><div class="ev-time">Fri Apr 10</div><div class="ev-body"><div class="ev-title">🎂 Birthday · Lake Como</div><div class="ev-sub">Boat 11:30a → Passalaqua 1p → La Veranda 8p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Sun Apr 12</div><div class="ev-body"><div class="ev-title">Milan LIN → Amsterdam KL 1616 · 1:00p dep</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Wed Apr 15</div><div class="ev-body"><div class="ev-title">✈ Return AMS → LHR → DFW · Arr 6:50p</div><div class="ev-sub">AA 7104 / AA 79 · BA conf: C9Q7RW</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#D85A30"></div><div class="ev-time">Thu Apr 16</div><div class="ev-body"><div class="ev-title">SVB Wine Dinner · Beverley's Bistro · 6–9p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Sun Apr 19</div><div class="ev-body"><div class="ev-title">✈ DFW → San Diego AA 2924 · 2:39p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Apr 20–24</div><div class="ev-body"><div class="ev-title">Chair Academy Part 1 · 8:30a–5p daily</div><div class="ev-sub">4840 Eastgate Mall, San Diego · ⚠ text Patrick re training conflicts</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-time">Wed Apr 22</div><div class="ev-body"><div class="ev-title">⚾ B4 · Rangers vs Pirates · 7:05p · In San Diego</div><span class="pill p-amber">⚠ Offer or sell</span></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Fri Apr 24</div><div class="ev-body"><div class="ev-title">✈ Return SAN → DFW AA 2719 · 5:21p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-time">Sun Apr 26</div><div class="ev-body"><div class="ev-title">⚾ B5 · Rangers vs Athletics · 1:35p</div><span class="pill p-amber">Decide</span></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Tue Apr 28</div><div class="ev-body"><div class="ev-title">Vistage: Building Your Brand 10:30a · ⚾ B6 Yankees 7:05p</div><span class="pill p-gold">🔥 Yankees — client night?</span></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Thu Apr 30</div><div class="ev-body"><div class="ev-title">Chair App: Pipeline Mgmt · Noon–1p</div></div></div>
+  </div>
+  <div class="sec-label">May–June 2026</div>
+  <div class="card card-info">
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 1</div><div class="ev-body"><div class="ev-title">LinkedIn Part 1 · 10–11:30a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 4</div><div class="ev-body"><div class="ev-title">Chair Cadence: Tools & Tips · 10:30a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 5</div><div class="ev-body"><div class="ev-title">LinkedIn Part 2 · 10a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 7</div><div class="ev-body"><div class="ev-title">Navigating Objections · 10a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 8</div><div class="ev-body"><div class="ev-title">IC Practice · 10:30a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 12</div><div class="ev-body"><div class="ev-title">LinkedIn Part 3 · 10a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 13</div><div class="ev-body"><div class="ev-title">LinkedIn Best Practices · 10:30a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 15</div><div class="ev-body"><div class="ev-title">Mindset & Framework of Prospecting · 10:30a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 18</div><div class="ev-body"><div class="ev-title">IC Practice w/ Deflections · 10:30a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 20</div><div class="ev-body"><div class="ev-title">Selection Interview Webinar · 11a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">May 26</div><div class="ev-body"><div class="ev-title">Issue Processing Webinar · 11a</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Jun 25–26</div><div class="ev-body"><div class="ev-title">Chair Academy Part 2 · Virtual · 10a–4p</div><span class="pill p-blue">Save the date</span></div></div>
+  </div>
+  <div class="sec-label">Summer travel conflicts</div>
+  <div class="card">
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Jul 2–6</div><div class="ev-body"><div class="ev-title">The Breakers · Palm Beach</div><div class="ev-sub">⚠ B38 Jul 2 Tigers, B39 Jul 4 Tigers — offer/sell · text Patrick re Jul 2 training</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Jul 25–Aug 2</div><div class="ev-body"><div class="ev-title">Alaska Cruise · Vancouver</div><div class="ev-sub">⚠ B41 Jul 27 Mariners — offer/sell · text Patrick re Jul 28, 30 training</div></div></div>
+  </div>
+</div>
+
+<!-- VISTAGE -->
+<div id="tab-vistage" class="panel">
+  <div class="cdown"><div><div class="cdown-n" id="days-launch2">—</div><div class="cdown-l">days to CE group launch</div></div><div class="cdown-right">Goal: 8 founding members<br>$1,950/mo · Aug 1<br>KE group: Feb 2027</div></div>
+  <div class="sec-label">Patrick — personal trainer · Tue & Thu 2pm</div>
+  <div class="card card-trainer">
+    <div style="font-size:13px;color:var(--cream);line-height:1.7">
+      Flexible schedule — adjust as needed. Text Patrick in advance when traveling.<br>
+      <span style="font-size:11px;color:#9FE1CB">Upcoming conflicts: Apr 7, 9, 14 (Como) · Apr 21, 23 (Chair Academy) · Jul 2 (Breakers) · Jul 28, 30 (Alaska)</span>
+    </div>
+    <div style="margin-top:8px" id="patrick-draft-btns">
+      <button class="btn" onclick="draftPatrick('como')" style="margin-bottom:6px">Draft text to Patrick — Como trip (Apr 7, 9, 14) ↗<small>Missing 3 sessions · Apr 6–15</small></button>
+      <button class="btn" onclick="draftPatrick('academy')">Draft text to Patrick — Academy week (Apr 21, 23) ↗<small>Missing 2 sessions · Apr 19–24</small></button>
+    </div>
+    <div id="patrick-msg" class="draft-strip"></div>
+  </div>
+  <div class="sec-label">Chair Academy</div>
+  <div class="card">
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Apr 20–24</div><div class="ev-body"><div class="ev-title">Part 1 · In-Person · San Diego</div><div class="ev-sub">4840 Eastgate Mall · 8:30a PST · chair.academy@vistage.com</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Jun 25–26</div><div class="ev-body"><div class="ev-title">Part 2 · Virtual</div><div class="ev-sub">10a–4p CT · Details TBC</div><span class="pill p-amber">Save the date</span></div></div>
+  </div>
+  <div class="sec-label">Post-Academy webinars · Apr–May</div>
+  <div class="card card-info">
+    <div class="vw-row"><div class="vw-date">Apr 28</div><div class="vw-body"><div class="vw-title">Building Your Brand</div><div class="vw-time">10:30–noon CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">Apr 30</div><div class="vw-body"><div class="vw-title">Chair App: Pipeline Management</div><div class="vw-time">Noon–1p CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 1</div><div class="vw-body"><div class="vw-title">LinkedIn Part 1</div><div class="vw-time">10–11:30a CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 4</div><div class="vw-body"><div class="vw-title">Chair Cadence: Tools & Tips</div><div class="vw-time">10:30a–noon CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 5</div><div class="vw-body"><div class="vw-title">LinkedIn Part 2</div><div class="vw-time">10–11:30a CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 7</div><div class="vw-body"><div class="vw-title">Navigating Objections</div><div class="vw-time">10–11:30a CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 8</div><div class="vw-body"><div class="vw-title">IC Practice</div><div class="vw-time">10:30–11:30a CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 12</div><div class="vw-body"><div class="vw-title">LinkedIn Part 3</div><div class="vw-time">10–11:30a CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 13</div><div class="vw-body"><div class="vw-title">LinkedIn Best Practices</div><div class="vw-time">10:30a–noon CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 15</div><div class="vw-body"><div class="vw-title">Mindset & Framework of Prospecting</div><div class="vw-time">10:30a–noon CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 18</div><div class="vw-body"><div class="vw-title">IC Practice w/ Deflections</div><div class="vw-time">10:30–11:30a CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 20</div><div class="vw-body"><div class="vw-title">Selection Interview Webinar</div><div class="vw-time">11a–1p CT</div></div></div>
+    <div class="vw-row"><div class="vw-date">May 26</div><div class="vw-body"><div class="vw-title">Issue Processing Webinar</div><div class="vw-time">11a–12:30p CT</div></div></div>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<div id="tab-practice" class="panel">
+  <div class="stat-grid sg3">
+    <div class="stat-box"><span class="stat-n" id="days-launch3">—</span><div class="stat-l">Days to launch</div></div>
+    <div class="stat-box"><span class="stat-n" id="prospect-count">0</span><div class="stat-l">Prospects</div></div>
+    <div class="stat-box"><span class="stat-n">Wk 3</span><div class="stat-l">LinkedIn</div></div>
+  </div>
+  <div class="sec-label">CEO prospect pipeline</div>
+  <div class="card card-gold">
+    <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:10px">Target: 8 founding CE members · $5M+ revenue · Dallas tech & tech-adjacent CEOs</div>
+    <div id="pip-list"><div style="padding:12px 0;text-align:center;font-size:12px;color:var(--muted);font-style:italic">Add your first prospect below</div></div>
+    <div class="div"></div>
+    <input class="fi" id="pip-name" placeholder="Prospect name">
+    <input class="fi" id="pip-co" placeholder="Industry descriptor">
+    <select class="fi" id="pip-stage">
+      <option>Identified</option><option>Contacted</option><option>Meeting set</option>
+      <option>55Seventy invite</option><option>Committed</option>
+    </select>
+    <button class="btn" onclick="addP()" style="margin-bottom:0">+ Add prospect to pipeline</button>
+  </div>
+  <div class="sec-label">LinkedIn campaign · Apr–Aug 2026</div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+      <span style="font-size:13px" id="linkedin-wk-label">Week — of 20 · 2 posts/week</span>
+      <span style="font-size:11px;color:var(--muted);font-style:italic" id="linkedin-pct-label">—% complete</span>
+    </div>
+    <div class="prog-wrap"><div class="prog-bar" id="linkedin-bar" style="width:0%"></div></div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;font-style:italic" id="linkedin-alert"></div>
+  </div>
+  <div class="sec-label">55Seventy closing protocol</div>
+  <div class="card">
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-body"><div class="ev-title">Step 1 — Discovery</div><div class="ev-sub">1:1 coffee or call · qualify fit · $5M+ revenue</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-body"><div class="ev-title">Step 2 — 55Seventy gathering · Locker 142</div><div class="ev-sub">Ch. Palmer 2012 · $448 · 98pts · breathing on arrival</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-body"><div class="ev-title">Step 3 — Close</div><div class="ev-sub">Dennis Howard available as optional silent closer</div></div></div>
+    <div class="div"></div>
+    <div style="font-size:11px;color:var(--muted);font-style:italic">Post-join: Arpepe Valtellina Sassella Rocce Rosse 2016 · $138 · 95pts → member's office. Second bottle if room earns it: Jamet Côte-Rôtie 2021 · $218 · 96pts</div>
+  </div>
+  <div class="sec-label">Key contacts</div>
+  <div class="card">
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-body"><div class="ev-title">Kevin Lubbers</div><div class="ev-sub">Vistage South Region · missed Apr 3 Fireside Chat — follow up</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-body"><div class="ev-title">Dennis Howard</div><div class="ev-sub">Master Chair · 10+ yrs · 4 active groups · optional closer only</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--green)"></div><div class="ev-body"><div class="ev-title">Jennie Ray · 55Seventy</div><div class="ev-sub">Locker 142 · copy Terri & Ashley on all orders</div></div></div>
+  </div>
+</div>
+
+<!-- RANGERS -->
+<div id="tab-rangers" class="panel">
+  <div class="stat-grid sg4" style="margin-bottom:8px">
+    <div class="stat-box"><span class="stat-n">40</span><div class="stat-l">B games</div></div>
+    <div class="stat-box"><span class="stat-n" id="r-client">0</span><div class="stat-l">Client</div></div>
+    <div class="stat-box"><span class="stat-n" id="r-sold">0</span><div class="stat-l">Sold</div></div>
+    <div class="stat-box"><span class="stat-n" id="r-pct">—</span><div class="stat-l">Biz %</div></div>
+  </div>
+  <div class="card card-alert" style="font-size:12px;color:var(--gold-pale);margin-bottom:8px">
+    <strong style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em">TAX LOG</strong> · For each client game: log who attended + business purpose. For personal games: log who attended for your records. Sold proceeds = income.
+  </div>
+  <div class="card card-success" style="font-size:12px;color:var(--cream);margin-bottom:8px">
+    <strong>Sec 18 · Seats 5 & 6 · Shift4 Club</strong> · Tap any game → set status, log attendees & business purpose. 2-week alerts auto-fire on undecided/travel games.
+  </div>
+  <div id="rangers-list"></div>
+</div>
+
+<!-- TAX LOG -->
+<div id="tab-taxlog" class="panel">
+  <div class="stat-grid sg3">
+    <div class="stat-box"><span class="stat-n" id="tl-client">0</span><div class="stat-l">Business games</div></div>
+    <div class="stat-box"><span class="stat-n" id="tl-total">0</span><div class="stat-l">Total decided</div></div>
+    <div class="stat-box"><span class="stat-n" id="tl-pct">—</span><div class="stat-l">Business %</div></div>
+  </div>
+  <div class="card card-alert" style="font-size:12px;color:var(--gold-pale);margin-bottom:10px">
+    <strong style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em">IRS REQUIREMENT</strong><br>
+    For each business entertainment game document: (1) client name, (2) business relationship, (3) business purpose discussed. Keep this log year-round. Sold tickets = income.
+  </div>
+  <div class="sec-label">2026 B Half-Season Log</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="tax-table">
+      <thead>
+        <tr><th>#</th><th>Date</th><th>Opponent</th><th>Disposition</th><th>Attended with</th><th>Business purpose</th></tr>
+      </thead>
+      <tbody id="tax-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TRAVEL -->
+<div id="tab-travel" class="panel">
+  <div class="sec-label">Como / Amsterdam · Apr 6–15</div>
+  <div class="card card-gold">
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Apr 6</div><div class="ev-body"><div class="ev-title">DFW → London · AA 20 · 4:55p</div><div class="ev-sub">Business · 13D/13G · text Patrick</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Apr 7</div><div class="ev-body"><div class="ev-title">LHR → Milan BA 7154 → Villa d'Este</div><div class="ev-sub">Conf: 6789SG152489 · +39-031-3481</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Apr 8</div><div class="ev-body"><div class="ev-title">Dinner · Materia · 7:45p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#ECC11C"></div><div class="ev-time">Apr 10</div><div class="ev-body"><div class="ev-title">🎂 Birthday · Lake Como</div><div class="ev-sub">Boat 11:30a · Passalaqua 1p · La Veranda 8p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Apr 12</div><div class="ev-body"><div class="ev-title">Milan LIN → Amsterdam KL 1616 · 1:00p</div><div class="ev-sub">Arrives AMS 2:50p · non-stop</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Apr 15</div><div class="ev-body"><div class="ev-title">AMS → LHR AA 7104 11:35a → LHR → DFW AA 79 2:25p</div><div class="ev-sub">Arr Dallas 6:50p · BA conf: C9Q7RW</div></div></div>
+  </div>
+  <div class="sec-label">Chair Academy · San Diego · Apr 19–24</div>
+  <div class="card card-gold">
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Apr 19</div><div class="ev-body"><div class="ev-title">DFW → San Diego AA 2924 · 2:39p</div><div class="ev-sub">Marriott La Jolla · text Patrick</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Apr 20–24</div><div class="ev-body"><div class="ev-title">Chair Academy Part 1 · 8:30a PST daily</div><div class="ev-sub">4840 Eastgate Mall, San Diego CA 92121</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:#185FA5"></div><div class="ev-time">Apr 24</div><div class="ev-body"><div class="ev-title">Return SAN → DFW AA 2719 · 5:21p</div></div></div>
+  </div>
+  <div class="sec-label">The Breakers · Palm Beach · Jul 2–6</div>
+  <div class="card card-gold">
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Jul 2</div><div class="ev-body"><div class="ev-title">DFW → West Palm AA 2276 · 9:30a</div><div class="ev-sub">With Robin, Scottie & grandkids · text Patrick re Jul 2 training</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Jul 6</div><div class="ev-body"><div class="ev-title">Return PBI → DFW AA 2276 · 1:13p</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-time">Jul 2 & 4</div><div class="ev-body"><div class="ev-title">⚾ B38, B39 Rangers vs Tigers · Offer or sell early</div></div></div>
+  </div>
+  <div class="sec-label">Alaska Cruise · Vancouver · Jul 25–Aug 2</div>
+  <div class="card card-gold">
+    <div class="ev-row"><div class="ev-dot" style="background:var(--amber)"></div><div class="ev-time">Jul 25–Aug 2</div><div class="ev-body"><div class="ev-title">Alaska Cruise · Canada Place Terminal</div><div class="ev-sub">With Robin, Catherine & Paul · text Patrick re Jul 28, 30 training</div></div></div>
+    <div class="ev-row"><div class="ev-dot" style="background:var(--gold)"></div><div class="ev-time">Jul 27</div><div class="ev-body"><div class="ev-title">⚾ B41 Rangers vs Mariners · Offer or sell</div></div></div>
+  </div>
+</div>
+
+<!-- GUIDE -->
+<div id="tab-guide" class="panel">
+  <div class="sec-label">Installation</div>
+  <div class="card card-gold">
+    <div style="font-size:13px;line-height:1.8;color:var(--cream)">
+      <strong>iPhone/iPad:</strong> Open in Safari → Share → "Add to Home Screen." Looks and works like a native app.<br><br>
+      <strong>Desktop:</strong> Bookmark the file or keep the browser tab pinned.<br><br>
+      <strong>Android:</strong> Open in Chrome → menu (⋮) → "Add to Home Screen."
+    </div>
+  </div>
+  <div class="sec-label">Eight tabs explained</div>
+  <div class="card">
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Today</div><div class="vw-body"><div class="vw-title">Morning briefing: countdown, tomorrow's game, pre-travel checklist, next milestones. Updates automatically every day — no stale dates.</div></div></div>
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Calendar</div><div class="vw-body"><div class="vw-title">Full Apr–Sep merged view: travel, Vistage sessions, Rangers games, social.</div></div></div>
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Vistage</div><div class="vw-body"><div class="vw-title">Patrick trainer alerts with draft text messages, Chair Academy dates, all webinars.</div></div></div>
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Practice</div><div class="vw-body"><div class="vw-title">CEO pipeline, LinkedIn progress (auto-calculates week), 55Seventy protocol, key contacts.</div></div></div>
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Rangers</div><div class="vw-body"><div class="vw-title">All 40 B games. Tap → set status, log who attended, toggle business use. 2-week alerts.</div></div></div>
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Tax Log</div><div class="vw-body"><div class="vw-title">Clean IRS-ready table of every decided game: disposition, attendees, business purpose, deductible %.</div></div></div>
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Travel</div><div class="vw-body"><div class="vw-title">All trips with flight details, hotel confirmations, Patrick notifications needed.</div></div></div>
+    <div class="vw-row"><div class="vw-date" style="min-width:68px;color:var(--gold)">Guide</div><div class="vw-body"><div class="vw-title">This page.</div></div></div>
+  </div>
+  <div style="text-align:center;padding:20px 0;font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold-dim);letter-spacing:.06em">
+    Clivus · Via Ascensus<br>
+    <span style="font-family:'EB Garamond',serif;font-style:italic;font-size:11px;font-weight:400">The road ascends for those who walk it with intent</span>
+  </div>
+</div>
+
+</div><!-- scroll-area -->
+
+<!-- TICKET MODAL -->
+<div class="modal-bg" id="ticket-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-sub" id="m-sub"></div>
+    <div class="modal-section">Disposition</div>
+    <div class="modal-grid">
+      <div class="mopt" id="mopt-going" onclick="setS('going')">✓ Attending</div>
+      <div class="mopt" id="mopt-client" onclick="setS('client')">🤝 Client Gift</div>
+      <div class="mopt" id="mopt-sold" onclick="setS('sold')">💰 Sold</div>
+      <div class="mopt" id="mopt-offer" onclick="setS('offer')">🎟 Offer / Decide</div>
+      <div class="mopt" id="mopt-travel" onclick="setS('travel')">✈ Out of Town</div>
+      <div class="mopt" id="mopt-available" onclick="setS('available')">? Undecided</div>
+    </div>
+    <div class="modal-section">Attended with</div>
+    <div class="attn-wrap">
+      <input class="attn-fi" id="m-attendees" placeholder="e.g. Tom · Robin · John Smith (CEO Acme)" oninput="saveAttendees()">
+    </div>
+    <div class="modal-section">Business entertainment</div>
+    <div class="biz-row" onclick="toggleBiz()">
+      <div>
+        <div class="biz-label">Business entertainment deduction</div>
+        <div class="biz-sub">Toggle on if this game qualifies for the business % tax deduction</div>
+      </div>
+      <div class="toggle" id="biz-toggle"></div>
+    </div>
+    <div class="purpose-wrap" id="purpose-wrap">
+      <span class="attn-label">Business purpose discussed (required by IRS)</span>
+      <input class="attn-fi" id="m-purpose" placeholder="e.g. Discussed Vistage membership, CEO peer group value" oninput="savePurpose()">
+    </div>
+    <button class="modal-close" onclick="closeM()">Save & Close</button>
+  </div>
+</div>
+
+<script>
+// ─── CLOCK ───────────────────────────────────────────────────────────────────
+function tick() {
+  const n = new Date();
+  document.getElementById('live-time').textContent = n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  document.getElementById('live-date').textContent = n.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+}
+setInterval(tick, 1000); tick();
+
+// ─── COUNTDOWN ───────────────────────────────────────────────────────────────
+function updateCD() {
+  const d = Math.round((new Date('2026-08-01') - new Date().setHours(0,0,0,0)) / 86400000);
+  ['days-launch','days-launch2','days-launch3'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.textContent = d;
+  });
+}
+updateCD();
+
+// ─── DATE HELPERS ─────────────────────────────────────────────────────────────
+function todayStr() {
+  const n = new Date();
+  return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+}
+function tomorrowStr() {
+  const n = new Date(); n.setDate(n.getDate()+1);
+  return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+}
+function fmtFull(dateStr) {
+  // Returns e.g. "Mon Apr 20"
+  const dt = new Date(dateStr+'T12:00:00');
+  return dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+}
+function fmtShort(dateStr) {
+  // Returns e.g. "Apr 20"
+  const dt = new Date(dateStr+'T12:00:00');
+  return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+// ─── STATIC EVENT CALENDAR ────────────────────────────────────────────────────
+// Each entry: {date, title, sub, dot, pill, pillClass}
+const STATIC_EVENTS = [
+  {date:'2026-04-04', title:'⚾ B1 · Rangers vs Reds · 6:05p', sub:'First B half-season game · With Tom · Sec 18 · Shift4 Club', dot:'var(--gold)', pill:'Attending', pillClass:'p-green'},
+  {date:'2026-04-06', title:'⚾ B2 · Rangers vs Mariners · 7:05p', sub:'Client gift', dot:'#1D9E75', pill:'Client gift', pillClass:'p-green'},
+  {date:'2026-04-06', title:'✈ Depart DFW → London AA 20 · 4:55p', sub:'Business · 13D/13G', dot:'var(--amber)'},
+  {date:'2026-04-07', title:'LHR → Milan · Villa d\'Este check-in', sub:'Conf: 6789SG152489', dot:'var(--amber)'},
+  {date:'2026-04-08', title:'⚾ B3 · Rangers vs Mariners · 1:35p', sub:'Sold SeatGeek', dot:'#7F77DD', pill:'Sold', pillClass:'p-purple'},
+  {date:'2026-04-08', title:'Dinner · Materia · 7:45p', dot:'var(--amber)'},
+  {date:'2026-04-10', title:'🎂 Birthday · Lake Como', sub:'Boat 11:30a · Passalaqua 1p · La Veranda 8p', dot:'#ECC11C'},
+  {date:'2026-04-12', title:'Milan LIN → Amsterdam KL 1616 · 1:00p', dot:'var(--amber)'},
+  {date:'2026-04-15', title:'✈ Return AMS → LHR → DFW · Arr 6:50p', sub:'AA 7104 / AA 79 · BA conf: C9Q7RW', dot:'var(--amber)'},
+  {date:'2026-04-16', title:'SVB Wine Dinner · Beverley\'s Bistro · 6–9p', dot:'#D85A30'},
+  {date:'2026-04-19', title:'✈ DFW → San Diego AA 2924 · 2:39p', dot:'var(--amber)'},
+  {date:'2026-04-20', title:'Chair Academy Part 1 · Day 1 · San Diego · 8:30a', sub:'4840 Eastgate Mall', dot:'#185FA5', pill:'Key milestone', pillClass:'p-blue'},
+  {date:'2026-04-21', title:'Chair Academy Part 1 · Day 2', sub:'8:30a PST', dot:'#185FA5'},
+  {date:'2026-04-22', title:'Chair Academy Part 1 · Day 3 · ⚾ B4 vs Pirates 7:05p', sub:'In San Diego — offer or sell tickets', dot:'#185FA5', pill:'⚠ Ticket conflict', pillClass:'p-amber'},
+  {date:'2026-04-23', title:'Chair Academy Part 1 · Day 4', dot:'#185FA5'},
+  {date:'2026-04-24', title:'Chair Academy Part 1 · Day 5 · ✈ Return SAN→DFW 5:21p', dot:'#185FA5'},
+  {date:'2026-04-26', title:'⚾ B5 · Rangers vs Athletics · 1:35p', dot:'var(--gold)', pill:'Decide', pillClass:'p-amber'},
+  {date:'2026-04-28', title:'Vistage: Building Your Brand · 10:30a', sub:'⚾ B6 · Rangers vs Yankees · 7:05p — Marquee', dot:'#185FA5', pill:'🔥 Yankees — client night?', pillClass:'p-gold'},
+  {date:'2026-04-30', title:'Chair App: Pipeline Mgmt · Noon–1p', dot:'#185FA5'},
+  {date:'2026-05-01', title:'LinkedIn Part 1 · 10–11:30a', dot:'#185FA5'},
+  {date:'2026-05-04', title:'Chair Cadence: Tools & Tips · 10:30a', dot:'#185FA5'},
+  {date:'2026-05-07', title:'Navigating Objections · 10a', dot:'#185FA5'},
+  {date:'2026-05-08', title:'IC Practice · 10:30a · ⚾ B7 Rangers vs Cubs', dot:'#185FA5'},
+  {date:'2026-05-20', title:'Selection Interview Webinar · 11a', dot:'#185FA5'},
+  {date:'2026-05-25', title:'⚾ B13 · Rangers vs Astros · 6:05p', sub:'Memorial Day · Rivalry', dot:'var(--gold)'},
+  {date:'2026-05-29', title:'⚾ B16 · Rangers vs Royals · 7:05p', sub:'Nolan Ryan jersey giveaway', dot:'var(--gold)'},
+  {date:'2026-06-25', title:'Chair Academy Part 2 · Virtual · Day 1 · 10a–4p', dot:'#185FA5', pill:'Save the date', pillClass:'p-blue'},
+  {date:'2026-06-26', title:'Chair Academy Part 2 · Virtual · Day 2', dot:'#185FA5'},
+  {date:'2026-07-02', title:'✈ The Breakers · Palm Beach · Depart', sub:'DFW → West Palm AA 2276 · 9:30a · ⚾ B38 vs Tigers', dot:'var(--amber)', pill:'⚠ Ticket conflict', pillClass:'p-amber'},
+  {date:'2026-07-04', title:'⚾ B39 · Rangers vs Tigers · 6:05p', sub:'4th of July · Away at Breakers — offer/sell', dot:'var(--gold)', pill:'⚠ Sell early', pillClass:'p-amber'},
+  {date:'2026-07-25', title:'Alaska Cruise · Vancouver depart', sub:'With Robin, Catherine & Paul', dot:'var(--amber)'},
+  {date:'2026-07-27', title:'⚾ B41 · Rangers vs Mariners · 7:05p', sub:'Alaska cruise week — offer/sell', dot:'var(--gold)', pill:'⚠ Sell early', pillClass:'p-amber'},
+  {date:'2026-08-01', title:'🎯 CE Group Launch Target', sub:'8 founding members · $1,950/mo', dot:'var(--gold)', pill:'Launch day', pillClass:'p-gold'},
+];
+
+// ─── TODAY TAB — DYNAMIC BUILD ────────────────────────────────────────────────
+function evRowHtml(e, showDate) {
+  const badge = e.gcal ? `<span class="gcal-event-badge">gcal</span>` : '';
+  const timeCol = showDate
+    ? `<div class="ev-time" style="min-width:54px">${fmtShort(e.date)}</div>`
+    : (e.timeLabel ? `<div class="ev-time">${e.timeLabel}</div>` : '');
+  return `<div class="ev-row">
+    <div class="ev-dot" style="background:${e.dot||'#185FA5'}"></div>
+    ${timeCol}
+    <div class="ev-body">
+      <div class="ev-title">${e.title}${badge}</div>
+      ${e.sub ? `<div class="ev-sub">${e.sub}</div>` : ''}
+      ${e.pill ? `<span class="pill ${e.pillClass}">${e.pill}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+function mergeAndSort(staticEvts, gcalEvts) {
+  // Normalize static events to have timeLabel
+  const statics = staticEvts.map(e => ({...e, timeLabel: ''}));
+  // Avoid duplicates: skip gcal events whose title closely matches a static event title
+  const staticTitles = statics.map(e => e.title.toLowerCase());
+  const filtered = gcalEvts.filter(g => !staticTitles.some(t => t.includes(g.title.toLowerCase().slice(0,8)) && g.title.length > 4));
+  return [...statics, ...filtered].sort((a,b) => (a.timeLabel||'').localeCompare(b.timeLabel||''));
+}
+
+function buildToday() {
+  const today = todayStr();
+  const tomorrow = tomorrowStr();
+  const tomorrowLabel = fmtFull(tomorrow);
+  let html = '';
+
+  // ── 2-week Ranger alerts ──────────────────────────────────────────────────
+  const alerts = B_GAMES.filter(g => is2wk(g));
+  if (alerts.length) {
+    html += `<div class="card card-alert" style="font-size:12px;color:var(--gold-pale);margin-bottom:10px">
+      <strong style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em">⚠ 2-WEEK RANGER ALERTS</strong><br>
+      ${alerts.map(g => g.day+' '+fmt(g.d)+' vs '+g.opp).join(' · ')} — tap Rangers tab to decide.</div>`;
+  }
+
+  // ── Today's events (static + gcal merged) ────────────────────────────────
+  const todayStatic = STATIC_EVENTS.filter(e => e.date === today);
+  const todayGcal = gcalForDate(today);
+  const todayMerged = mergeAndSort(todayStatic, todayGcal);
+  if (todayMerged.length) {
+    html += `<div class="sec-label">Today · ${fmtFull(today)}</div><div class="card card-gold">`;
+    todayMerged.forEach(e => { html += evRowHtml(e, false); });
+    html += `</div>`;
+  }
+
+  // ── Tomorrow's events (static + gcal merged) ─────────────────────────────
+  const tmrStatic = STATIC_EVENTS.filter(e => e.date === tomorrow);
+  const tmrGcal = gcalForDate(tomorrow);
+  const tmrMerged = mergeAndSort(tmrStatic, tmrGcal);
+  html += `<div class="sec-label">Tomorrow · ${tomorrowLabel}</div>`;
+  if (tmrMerged.length) {
+    html += `<div class="card card-gold">`;
+    tmrMerged.forEach(e => { html += evRowHtml(e, false); });
+    html += `</div>`;
+  } else {
+    html += `<div class="card"><div style="font-size:12px;color:var(--muted);font-style:italic;padding:4px 0">No events scheduled</div></div>`;
+  }
+
+  // ── Pre-travel checklist ──────────────────────────────────────────────────
+  const TRAVEL_DEPARTURES = [
+    {date:'2026-04-06', label:'Como/London', sessions:'Apr 7, 9, 14'},
+    {date:'2026-04-19', label:'San Diego Academy', sessions:'Apr 21, 23'},
+    {date:'2026-07-02', label:'Palm Beach (Breakers)', sessions:'Jul 2'},
+    {date:'2026-07-25', label:'Alaska Cruise', sessions:'Jul 28, 30'},
+  ];
+  const upcomingDep = TRAVEL_DEPARTURES.find(t => {
+    const daysTo = Math.round((new Date(t.date+'T12:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
+    return daysTo >= 0 && daysTo <= 5;
+  });
+  if (upcomingDep) {
+    const daysTo = Math.round((new Date(upcomingDep.date+'T12:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
+    const depLabel = daysTo === 0 ? 'Today' : daysTo === 1 ? 'Tomorrow' : `${fmtShort(upcomingDep.date)}`;
+    html += `<div class="sec-label">Pre-travel checklist · Departs ${depLabel} — ${upcomingDep.label}</div>
+      <div class="card" id="checklist-card">
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Text Patrick — heads up on missing ${upcomingDep.sessions} training sessions</div></div>
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Review upcoming Rangers games — offer or sell any travel-window tickets</div></div>
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Schedule LinkedIn posts to auto-publish during travel</div></div>
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Confirm ground transfers and hotel check-in details</div></div>
+      </div>`;
+  } else {
+    html += `<div class="sec-label">Active items</div>
+      <div class="card" id="checklist-card">
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Log Apr 6 Rangers client name for IRS tax record</div></div>
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Log Apr 8 SeatGeek sale price when settled</div></div>
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Build CEO prospect pipeline — target 8 founding members by Aug 1</div></div>
+        <div class="check-item" onclick="tc(this)"><div class="cb"></div><div class="ci-text">Schedule next 55Seventy gathering · Locker 142</div></div>
+      </div>`;
+  }
+
+  // ── Upcoming: next 14 days — static + gcal merged, grouped by date ────────
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() + 15);
+  const cutStr = cutoff.getFullYear()+'-'+String(cutoff.getMonth()+1).padStart(2,'0')+'-'+String(cutoff.getDate()).padStart(2,'0');
+  const upStatic = STATIC_EVENTS.filter(e => e.date > tomorrow && e.date <= cutStr);
+  const upGcal = gcalEvents.filter(e => e.date > tomorrow && e.date <= cutStr);
+  const upMerged = mergeAndSort(upStatic, upGcal).sort((a,b) => a.date.localeCompare(b.date));
+  if (upMerged.length) {
+    html += `<div class="sec-label">Next 14 days</div><div class="card">`;
+    upMerged.forEach(e => { html += evRowHtml(e, true); });
+    html += `</div>`;
+  }
+
+  document.getElementById('today-dynamic').innerHTML = html;
+  loadChecks();
+}
+
+// ─── LINKEDIN WEEK CALCULATOR ─────────────────────────────────────────────────
+function updateLinkedIn() {
+  // Campaign: Apr 6, 2026 → Aug 1, 2026 (20 weeks, 2 posts/week)
+  const start = new Date('2026-04-06T00:00:00');
+  const now = new Date(); now.setHours(0,0,0,0);
+  const daysSinceStart = Math.floor((now - start) / 86400000);
+  if (daysSinceStart < 0) {
+    document.getElementById('linkedin-wk-label').textContent = 'Starts Apr 6 · 20 weeks · 2 posts/week';
+    document.getElementById('linkedin-pct-label').textContent = 'Not started';
+    document.getElementById('linkedin-bar').style.width = '0%';
+    document.getElementById('linkedin-alert').textContent = '';
+    return;
+  }
+  const week = Math.min(Math.floor(daysSinceStart / 7) + 1, 20);
+  const pct = Math.min(Math.round(week / 20 * 100), 100);
+  document.getElementById('linkedin-wk-label').textContent = `Week ${week} of 20 · 2 posts/week`;
+  document.getElementById('linkedin-pct-label').textContent = `${pct}% complete`;
+  document.getElementById('linkedin-bar').style.width = pct + '%';
+  // Alert if coming up on travel
+  const TRAVEL_BLOCKS = [{s:'2026-04-06',e:'2026-04-24'},{s:'2026-07-02',e:'2026-07-06'},{s:'2026-07-25',e:'2026-08-02'}];
+  const todayFmt = todayStr();
+  const alertEl = document.getElementById('linkedin-alert');
+  const inTravelNow = TRAVEL_BLOCKS.some(t => todayFmt >= t.s && todayFmt <= t.e);
+  const travelSoon = TRAVEL_BLOCKS.find(t => {
+    const d = Math.round((new Date(t.s+'T12:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
+    return d > 0 && d <= 5;
+  });
+  if (inTravelNow) {
+    alertEl.style.color = 'var(--amber)'; alertEl.textContent = '✈ Currently traveling — posts should be pre-scheduled';
+  } else if (travelSoon) {
+    alertEl.style.color = 'var(--amber)'; alertEl.textContent = `⚠ Travel in ${Math.round((new Date(travelSoon.s+'T12:00:00') - new Date().setHours(0,0,0,0))/86400000)} days — schedule posts before departing`;
+  } else {
+    alertEl.style.color = 'var(--muted)'; alertEl.textContent = 'On track · 2 posts this week';
+  }
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function sw(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.scroll-area').scrollTop = 0;
+  if(id === 'taxlog') renderTaxLog();
+}
+
+// ─── CHECKLIST ────────────────────────────────────────────────────────────────
+function tc(item) {
+  const cb = item.querySelector('.cb'), tx = item.querySelector('.ci-text');
+  cb.classList.toggle('chk'); tx.classList.toggle('done');
+  try {
+    const s = [];
+    document.querySelectorAll('.check-item').forEach((it,i) => s[i] = it.querySelector('.cb').classList.contains('chk'));
+    localStorage.setItem('cv5_checks_'+todayStr(), JSON.stringify(s));
+  } catch(e){}
+}
+function loadChecks() {
+  try {
+    const s = JSON.parse(localStorage.getItem('cv5_checks_'+todayStr())||'[]');
+    document.querySelectorAll('.check-item').forEach((it,i) => {
+      if(s[i]) { it.querySelector('.cb').classList.add('chk'); it.querySelector('.ci-text').classList.add('done'); }
+    });
+  } catch(e){}
+}
+
+// ─── PIPELINE ─────────────────────────────────────────────────────────────────
+let prospects = [];
+try { prospects = JSON.parse(localStorage.getItem('cv3_prospects')||'[]'); } catch(e){}
+const stagePill = {'Identified':'p-navy','Contacted':'p-amber','Meeting set':'p-purple','55Seventy invite':'p-gold','Committed':'p-green'};
+function renderPip() {
+  document.getElementById('prospect-count').textContent = prospects.length;
+  const el = document.getElementById('pip-list');
+  if(!prospects.length) { el.innerHTML='<div style="padding:12px 0;text-align:center;font-size:12px;color:var(--muted);font-style:italic">Add your first prospect below</div>'; return; }
+  el.innerHTML = prospects.map((p,i) => `<div class="pip-row"><div><div class="pip-name">${p.n}</div><div class="pip-co">${p.c}</div></div><span class="pill ${stagePill[p.s]||'p-navy'}">${p.s}</span><span class="pip-del" onclick="delP(${i})">×</span></div>`).join('');
+}
+function addP() {
+  const n = document.getElementById('pip-name').value.trim(), c = document.getElementById('pip-co').value.trim(), s = document.getElementById('pip-stage').value;
+  if(!n) return;
+  prospects.push({n,c,s}); try { localStorage.setItem('cv3_prospects',JSON.stringify(prospects)); } catch(e){}
+  document.getElementById('pip-name').value = ''; document.getElementById('pip-co').value = '';
+  renderPip();
+}
+function delP(i) { prospects.splice(i,1); try { localStorage.setItem('cv3_prospects',JSON.stringify(prospects)); } catch(e){} renderPip(); }
+
+// ─── PATRICK DRAFT ────────────────────────────────────────────────────────────
+function draftPatrick(trip) {
+  const msgs = {
+    como: 'Hey Patrick — heads up that I\'ll be traveling to Italy and Amsterdam April 6–15 and will need to miss our sessions on April 7, 9, and 14. Let\'s pick back up on the 16th if you\'re available. Apologies for the disruption — appreciate your flexibility.',
+    academy: 'Hey Patrick — I\'m heading to San Diego for a training program April 19–24 and will miss our sessions April 21 and 23. Back and ready to go on the 28th. Thanks for understanding.'
+  };
+  const el = document.getElementById('patrick-msg');
+  el.innerHTML = `<strong style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:#5DCAA5">DRAFT TEXT TO PATRICK</strong><br><br><em>${msgs[trip]}</em>`;
+  el.classList.add('show');
+}
+
+// ─── RANGERS DATA ─────────────────────────────────────────────────────────────
+const ALL_HOME = [
+  {d:'2026-04-03',day:'Fri',opp:'Cincinnati Reds',time:'3:05p',note:'Home Opener'},
+  {d:'2026-04-04',day:'Sat',opp:'Cincinnati Reds',time:'6:05p',note:''},
+  {d:'2026-04-05',day:'Sun',opp:'Cincinnati Reds',time:'1:35p',note:''},
+  {d:'2026-04-06',day:'Mon',opp:'Seattle Mariners',time:'7:05p',note:'Chenille giveaway'},
+  {d:'2026-04-07',day:'Tue',opp:'Seattle Mariners',time:'7:05p',note:''},
+  {d:'2026-04-08',day:'Wed',opp:'Seattle Mariners',time:'1:35p',note:'Bobblehead'},
+  {d:'2026-04-21',day:'Tue',opp:'Pittsburgh Pirates',time:'7:05p',note:''},
+  {d:'2026-04-22',day:'Wed',opp:'Pittsburgh Pirates',time:'7:05p',note:'Pudge bobblehead'},
+  {d:'2026-04-23',day:'Thu',opp:'Pittsburgh Pirates',time:'7:05p',note:''},
+  {d:'2026-04-24',day:'Fri',opp:'Oakland Athletics',time:'7:05p',note:''},
+  {d:'2026-04-25',day:'Sat',opp:'Oakland Athletics',time:'6:05p',note:''},
+  {d:'2026-04-26',day:'Sun',opp:'Oakland Athletics',time:'1:35p',note:''},
+  {d:'2026-04-27',day:'Mon',opp:'New York Yankees',time:'7:05p',note:'Marquee'},
+  {d:'2026-04-28',day:'Tue',opp:'New York Yankees',time:'7:05p',note:'Marquee 🔥'},
+  {d:'2026-04-29',day:'Wed',opp:'New York Yankees',time:'7:05p',note:'Marquee'},
+  {d:'2026-05-08',day:'Fri',opp:'Chicago Cubs',time:'7:05p',note:''},
+  {d:'2026-05-09',day:'Sat',opp:'Chicago Cubs',time:'6:05p',note:''},
+  {d:'2026-05-10',day:'Sun',opp:'Chicago Cubs',time:'1:35p',note:"Mother's Day"},
+  {d:'2026-05-11',day:'Mon',opp:'Arizona D-backs',time:'7:05p',note:''},
+  {d:'2026-05-12',day:'Tue',opp:'Arizona D-backs',time:'7:05p',note:''},
+  {d:'2026-05-13',day:'Wed',opp:'Arizona D-backs',time:'7:05p',note:''},
+  {d:'2026-05-25',day:'Mon',opp:'Houston Astros',time:'6:05p',note:'Memorial Day'},
+  {d:'2026-05-26',day:'Tue',opp:'Houston Astros',time:'7:05p',note:'Rivalry'},
+  {d:'2026-05-27',day:'Wed',opp:'Houston Astros',time:'7:05p',note:'Rivalry'},
+  {d:'2026-05-28',day:'Thu',opp:'Houston Astros',time:'7:05p',note:'Rivalry'},
+  {d:'2026-05-29',day:'Fri',opp:'Kansas City Royals',time:'7:05p',note:'Nolan Ryan jersey'},
+  {d:'2026-05-30',day:'Sat',opp:'Kansas City Royals',time:'6:05p',note:''},
+  {d:'2026-05-31',day:'Sun',opp:'Kansas City Royals',time:'1:35p',note:''},
+  {d:'2026-06-05',day:'Fri',opp:'Cleveland Guardians',time:'7:05p',note:''},
+  {d:'2026-06-06',day:'Sat',opp:'Cleveland Guardians',time:'6:35p',note:''},
+  {d:'2026-06-07',day:'Sun',opp:'Cleveland Guardians',time:'1:35p',note:''},
+  {d:'2026-06-15',day:'Mon',opp:'Minnesota Twins',time:'7:05p',note:''},
+  {d:'2026-06-16',day:'Tue',opp:'Minnesota Twins',time:'7:05p',note:''},
+  {d:'2026-06-18',day:'Thu',opp:'Minnesota Twins',time:'7:05p',note:''},
+  {d:'2026-06-19',day:'Fri',opp:'San Diego Padres',time:'7:05p',note:'Interleague'},
+  {d:'2026-06-20',day:'Sat',opp:'San Diego Padres',time:'6:05p',note:''},
+  {d:'2026-06-21',day:'Sun',opp:'San Diego Padres',time:'1:35p',note:"Father's Day"},
+  {d:'2026-07-02',day:'Thu',opp:'Detroit Tigers',time:'7:05p',note:''},
+  {d:'2026-07-04',day:'Sat',opp:'Detroit Tigers',time:'6:05p',note:'4th of July'},
+  {d:'2026-07-05',day:'Sun',opp:'Detroit Tigers',time:'1:35p',note:''},
+  {d:'2026-07-07',day:'Tue',opp:'LA Angels',time:'7:05p',note:''},
+  {d:'2026-07-08',day:'Wed',opp:'LA Angels',time:'7:05p',note:''},
+  {d:'2026-07-09',day:'Thu',opp:'LA Angels',time:'7:05p',note:''},
+  {d:'2026-07-10',day:'Fri',opp:'Houston Astros',time:'6:30p',note:'Rivalry'},
+  {d:'2026-07-11',day:'Sat',opp:'Houston Astros',time:'6:05p',note:'Rivalry'},
+  {d:'2026-07-12',day:'Sun',opp:'Houston Astros',time:'1:35p',note:'Rivalry'},
+  {d:'2026-07-20',day:'Mon',opp:'Chicago White Sox',time:'7:05p',note:''},
+  {d:'2026-07-21',day:'Tue',opp:'Chicago White Sox',time:'7:05p',note:''},
+  {d:'2026-07-22',day:'Wed',opp:'Chicago White Sox',time:'7:05p',note:''},
+  {d:'2026-07-24',day:'Fri',opp:'Seattle Mariners',time:'7:05p',note:''},
+  {d:'2026-07-25',day:'Sat',opp:'Seattle Mariners',time:'6:15p',note:''},
+  {d:'2026-07-26',day:'Sun',opp:'Seattle Mariners',time:'1:35p',note:''},
+  {d:'2026-07-27',day:'Mon',opp:'Seattle Mariners',time:'7:05p',note:'4-game'},
+  {d:'2026-08-03',day:'Mon',opp:'San Francisco Giants',time:'7:05p',note:''},
+  {d:'2026-08-04',day:'Tue',opp:'San Francisco Giants',time:'7:05p',note:''},
+  {d:'2026-08-05',day:'Wed',opp:'San Francisco Giants',time:'7:05p',note:''},
+  {d:'2026-08-07',day:'Fri',opp:'Baltimore Orioles',time:'7:05p',note:''},
+  {d:'2026-08-08',day:'Sat',opp:'Baltimore Orioles',time:'6:05p',note:''},
+  {d:'2026-08-09',day:'Sun',opp:'Baltimore Orioles',time:'1:35p',note:''},
+  {d:'2026-08-18',day:'Tue',opp:'Washington Nationals',time:'7:05p',note:''},
+  {d:'2026-08-19',day:'Wed',opp:'Washington Nationals',time:'7:05p',note:''},
+  {d:'2026-08-20',day:'Thu',opp:'Washington Nationals',time:'7:05p',note:''},
+  {d:'2026-08-21',day:'Fri',opp:'LA Angels',time:'7:05p',note:''},
+  {d:'2026-08-22',day:'Sat',opp:'LA Angels',time:'6:05p',note:''},
+  {d:'2026-08-23',day:'Sun',opp:'LA Angels',time:'1:35p',note:''},
+  {d:'2026-08-31',day:'Mon',opp:'Oakland Athletics',time:'7:05p',note:''},
+  {d:'2026-09-01',day:'Tue',opp:'Oakland Athletics',time:'7:05p',note:''},
+  {d:'2026-09-02',day:'Wed',opp:'Oakland Athletics',time:'7:05p',note:''},
+  {d:'2026-09-03',day:'Thu',opp:'Tampa Bay Rays',time:'7:05p',note:'Playoff race'},
+  {d:'2026-09-04',day:'Fri',opp:'Tampa Bay Rays',time:'7:05p',note:'Playoff race'},
+  {d:'2026-09-05',day:'Sat',opp:'Tampa Bay Rays',time:'6:05p',note:'Playoff race'},
+  {d:'2026-09-06',day:'Sun',opp:'Tampa Bay Rays',time:'1:35p',note:'Playoff race'},
+  {d:'2026-09-15',day:'Tue',opp:'Boston Red Sox',time:'7:05p',note:'Clemente Day'},
+  {d:'2026-09-16',day:'Wed',opp:'Boston Red Sox',time:'7:05p',note:''},
+  {d:'2026-09-17',day:'Thu',opp:'Boston Red Sox',time:'7:05p',note:''},
+  {d:'2026-09-18',day:'Fri',opp:'Toronto Blue Jays',time:'7:05p',note:''},
+  {d:'2026-09-19',day:'Sat',opp:'Toronto Blue Jays',time:'6:05p',note:''},
+  {d:'2026-09-20',day:'Sun',opp:'Toronto Blue Jays',time:'1:35p',note:''},
+  {d:'2026-09-22',day:'Tue',opp:'New York Mets',time:'7:05p',note:'Final homestand'},
+  {d:'2026-09-23',day:'Wed',opp:'New York Mets',time:'7:05p',note:'Final homestand'},
+  {d:'2026-09-24',day:'Thu',opp:'New York Mets',time:'7:05p',note:'Final homestand'},
+];
+const B_GAMES = ALL_HOME.filter((_,i) => i%2===1).map((g,i) => ({...g,bNum:i+1}));
+
+const TRAVEL = [{s:'2026-04-06',e:'2026-04-15'},{s:'2026-04-19',e:'2026-04-24'},{s:'2026-07-02',e:'2026-07-06'},{s:'2026-07-25',e:'2026-08-02'}];
+function inTravel(d) { return TRAVEL.some(t => d>=t.s && d<=t.e); }
+function daysUntil(d) { const t=new Date(); t.setHours(0,0,0,0); return Math.round((new Date(d+'T12:00:00')-t)/86400000); }
+function is2wk(g) { const du=daysUntil(g.d),s=getS(g); return du>0&&du<=14&&(s==='available'||s==='travel'||s==='offer'); }
+function fmt(d) { const dt=new Date(d+'T12:00:00'); return (dt.getMonth()+1)+'/'+(dt.getDate()); }
+function mname(d) { return new Date(d+'T12:00:00').toLocaleString('en-US',{month:'long',year:'numeric'}); }
+
+let tData = {};
+try { tData = JSON.parse(localStorage.getItem('cv3_tickets')||'{}'); } catch(e){}
+
+function ensureGame(d) { if(!tData[d]) tData[d] = {s:'available',a:'',biz:false,p:''}; }
+ensureGame('2026-04-04'); if(!tData['2026-04-04'].s||tData['2026-04-04'].s==='available') tData['2026-04-04'].s='going'; tData['2026-04-04'].a=tData['2026-04-04'].a||'Tom';
+ensureGame('2026-04-06'); if(!tData['2026-04-06'].s||tData['2026-04-06'].s==='available') tData['2026-04-06'].s='client';
+ensureGame('2026-04-08'); if(!tData['2026-04-08'].s||tData['2026-04-08'].s==='available') tData['2026-04-08'].s='sold';
+
+function getS(g) {
+  if(tData[g.d]) return tData[g.d].s || 'available';
+  if(inTravel(g.d)) return 'travel';
+  return 'available';
+}
+const sLabel = {going:'Attending',client:'Client Gift',sold:'Sold',offer:'Offer/Decide',travel:'Out of Town',available:'Undecided'};
+const sPill = {going:'p-green',client:'p-green',sold:'p-purple',offer:'p-amber',travel:'p-navy',available:'p-navy'};
+
+function saveTickets() { try { localStorage.setItem('cv3_tickets',JSON.stringify(tData)); } catch(e){} }
+
+function renderRangers() {
+  const el = document.getElementById('rangers-list');
+  let html='', lastM='', cClient=0, cSold=0, cDecided=0, cGoing=0;
+  B_GAMES.forEach(g => {
+    if(daysUntil(g.d)<-1) return;
+    const s=getS(g);
+    if(s==='client') cClient++;
+    if(s==='sold') cSold++;
+    if(s==='going') cGoing++;
+    if(s!=='available'&&s!=='travel') cDecided++;
+    const alert2=is2wk(g);
+    const data=tData[g.d]||{};
+    const hasBiz=data.biz&&s!=='sold'&&s!=='available'&&s!=='travel';
+    const m=mname(g.d);
+    if(m!==lastM){html+=`<div class="mhdr">${m}</div>`;lastM=m;}
+    const rowClass=s==='travel'?'tr-dim':hasBiz?'tr-client-row':alert2?'tr-alert':'';
+    const attendeeNote=data.a?`<small>With: ${data.a}${hasBiz?' · Biz ✓':''}</small>`:(hasBiz?'<small>Biz entertainment ✓</small>':'');
+    html+=`<div class="tr ${rowClass}" onclick="openM('${g.d}')">
+      <div class="tr-num">#${g.bNum}</div>
+      <div class="tr-date"><strong>${g.day} ${fmt(g.d)}</strong><span>${g.time}</span></div>
+      <div class="tr-opp"><strong>${g.opp}</strong>${attendeeNote||(g.note?('<small>'+(alert2?'⚠ ':'')+g.note+'</small>'):'' )}</div>
+      <span class="pill ${sPill[s]}" style="font-size:9px;flex-shrink:0">${sLabel[s]}</span>
+    </div>`;
+  });
+  el.innerHTML=html;
+  document.getElementById('r-client').textContent=cClient;
+  document.getElementById('r-sold').textContent=cSold;
+  let bizGoing=0;
+  B_GAMES.forEach(g=>{const d=tData[g.d];if(d&&d.biz&&d.s==='going')bizGoing++;});
+  const totalBiz=cClient+bizGoing;
+  document.getElementById('r-pct').textContent=cDecided>0?Math.round(totalBiz/cDecided*100)+'%':'—';
+}
+
+// ─── TAX LOG ──────────────────────────────────────────────────────────────────
+function renderTaxLog() {
+  let cClient=0,cTotal=0;
+  const rows=[];
+  B_GAMES.forEach(g=>{
+    const s=getS(g);
+    if(s==='available'||s==='travel'||s==='offer') return;
+    const d=tData[g.d]||{};
+    const isBiz=s==='client'||(s==='going'&&d.biz);
+    if(isBiz) cClient++;
+    cTotal++;
+    rows.push({g,s,d,isBiz});
+  });
+  document.getElementById('tl-client').textContent=cClient;
+  document.getElementById('tl-total').textContent=cTotal;
+  document.getElementById('tl-pct').textContent=cTotal>0?Math.round(cClient/cTotal*100)+'%':'—';
+  const dispositionLabel={going:'Personal',client:'Client gift',sold:'Sold',offer:'Undecided',travel:'Travel'};
+  const tbody=document.getElementById('tax-tbody');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="tg-muted" style="padding:16px;text-align:center">No decided games yet — update status in Rangers tab</td></tr>';return;}
+  tbody.innerHTML=rows.map(({g,s,d,isBiz})=>`
+    <tr>
+      <td style="font-family:'Cinzel',serif;font-size:10px;color:var(--gold-dim)">#${g.bNum}</td>
+      <td><strong style="font-size:11px">${g.day} ${fmt(g.d)}</strong></td>
+      <td style="font-size:11px">${g.opp}</td>
+      <td>${isBiz?'<span class="pill p-green" style="font-size:9px">Business</span>':s==='sold'?'<span class="pill p-purple" style="font-size:9px">Sold</span>':'<span class="pill p-navy" style="font-size:9px">Personal</span>'}</td>
+      <td style="font-size:11px;color:${d.a?'var(--cream)':'var(--muted)'}">${d.a||'—'}</td>
+      <td style="font-size:11px;color:${d.p?'var(--cream)':'var(--muted)'}">${d.p||'—'}</td>
+    </tr>`).join('');
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+let curDate=null;
+function openM(date) {
+  curDate=date; ensureGame(date);
+  const g=B_GAMES.find(x=>x.d===date);
+  document.getElementById('m-title').textContent=`B${g.bNum} · ${g.day} ${fmt(g.d)} · vs ${g.opp}`;
+  document.getElementById('m-sub').textContent=`${g.time}${g.note?' · '+g.note:''} · Sec 18, 5&6 · Shift4 Club · all-inclusive`;
+  const cur=getS(g);
+  ['going','client','sold','offer','travel','available'].forEach(s=>document.getElementById('mopt-'+s).classList.toggle('sel',s===cur));
+  document.getElementById('m-attendees').value=tData[date].a||'';
+  const isBiz=tData[date].biz||false;
+  document.getElementById('biz-toggle').classList.toggle('on',isBiz);
+  document.getElementById('purpose-wrap').classList.toggle('show',isBiz);
+  document.getElementById('m-purpose').value=tData[date].p||'';
+  document.getElementById('ticket-modal').classList.add('open');
+}
+function setS(s) {
+  if(!curDate) return;
+  ensureGame(curDate); tData[curDate].s=s;
+  ['going','client','sold','offer','travel','available'].forEach(st=>document.getElementById('mopt-'+st).classList.toggle('sel',st===s));
+  saveTickets(); renderRangers();
+}
+function saveAttendees() { if(!curDate) return; ensureGame(curDate); tData[curDate].a=document.getElementById('m-attendees').value; saveTickets(); }
+function toggleBiz() {
+  if(!curDate) return; ensureGame(curDate);
+  tData[curDate].biz=!tData[curDate].biz;
+  document.getElementById('biz-toggle').classList.toggle('on',tData[curDate].biz);
+  document.getElementById('purpose-wrap').classList.toggle('show',tData[curDate].biz);
+  saveTickets(); renderRangers();
+}
+function savePurpose() { if(!curDate) return; ensureGame(curDate); tData[curDate].p=document.getElementById('m-purpose').value; saveTickets(); }
+function closeM() {
+  document.getElementById('ticket-modal').classList.remove('open');
+  curDate=null; renderRangers();
+}
+document.getElementById('ticket-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeM();});
+
+// ─── GOOGLE CALENDAR INTEGRATION ─────────────────────────────────────────────
+// Uses Google OAuth implicit flow — works from local file, no backend needed.
+// User must supply their own Google OAuth Client ID (one-time setup).
+
+const GCAL_SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
+const GCAL_TOKEN_KEY = 'cv5_gcal_token';
+const GCAL_CLIENT_KEY = 'cv5_gcal_client_id';
+const GCAL_CACHE_KEY = 'cv5_gcal_cache';
+
+let gcalToken = null;
+let gcalClientId = null;
+let gcalEvents = []; // live events fetched from Google
+
+function gcalInit() {
+  gcalClientId = localStorage.getItem(GCAL_CLIENT_KEY) || '';
+  const stored = localStorage.getItem(GCAL_TOKEN_KEY);
+  if (stored) {
+    try {
+      const t = JSON.parse(stored);
+      if (t.expires > Date.now()) { gcalToken = t.access_token; gcalUpdateBar(true); gcalFetchToday(); return; }
+    } catch(e){}
+  }
+  // Check URL hash for token from OAuth redirect
+  if (location.hash && location.hash.includes('access_token')) {
+    const params = new URLSearchParams(location.hash.slice(1));
+    const token = params.get('access_token');
+    const expiresIn = parseInt(params.get('expires_in') || '3600', 10);
+    if (token) {
+      gcalToken = token;
+      localStorage.setItem(GCAL_TOKEN_KEY, JSON.stringify({access_token: token, expires: Date.now() + expiresIn * 1000}));
+      history.replaceState(null, '', location.pathname + location.search);
+      gcalUpdateBar(true); gcalFetchToday(); return;
+    }
+  }
+  gcalUpdateBar(false);
+}
+
+function gcalUpdateBar(connected) {
+  const status = document.getElementById('gcal-status');
+  const btn = document.getElementById('gcal-btn');
+  if (!status || !btn) return;
+  if (connected) {
+    status.textContent = '📅 Google Calendar connected';
+    status.className = 'gcal-status connected';
+    btn.textContent = 'Disconnect';
+    btn.className = 'gcal-btn disconnect';
+  } else {
+    status.textContent = gcalClientId ? '📅 Google Calendar — tap to connect' : '📅 Google Calendar not connected';
+    status.className = 'gcal-status';
+    btn.textContent = gcalClientId ? 'Connect' : 'Setup';
+    btn.className = 'gcal-btn';
+  }
+}
+
+function gcalAction() {
+  if (gcalToken) { gcalDisconnect(); return; }
+  if (!gcalClientId) { toggleGcalSetup(true); return; }
+  gcalConnect();
+}
+
+function gcalConnect() {
+  if (!gcalClientId) { toggleGcalSetup(true); return; }
+  const redirectUri = location.href.split('#')[0].split('?')[0];
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?` +
+    `client_id=${encodeURIComponent(gcalClientId)}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&response_type=token` +
+    `&scope=${encodeURIComponent(GCAL_SCOPE)}` +
+    `&prompt=select_account`;
+  location.href = url;
+}
+
+function gcalDisconnect() {
+  gcalToken = null; gcalEvents = [];
+  localStorage.removeItem(GCAL_TOKEN_KEY);
+  gcalUpdateBar(false);
+  buildToday();
+}
+
+function saveClientId() {
+  const val = document.getElementById('gcal-client-id-input').value.trim();
+  if (!val) return;
+  gcalClientId = val;
+  localStorage.setItem(GCAL_CLIENT_KEY, val);
+  toggleGcalSetup(false);
+  gcalConnect();
+}
+
+function toggleGcalSetup(show) {
+  const el = document.getElementById('gcal-setup-hint');
+  if (el) el.style.display = show ? 'block' : 'none';
+}
+
+async function gcalFetchToday() {
+  if (!gcalToken) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const in15 = new Date(today); in15.setDate(in15.getDate() + 15);
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events?` +
+      `timeMin=${today.toISOString()}&timeMax=${in15.toISOString()}` +
+      `&singleEvents=true&orderBy=startTime&maxResults=50`,
+      { headers: { Authorization: `Bearer ${gcalToken}` } }
+    );
+    if (res.status === 401) { gcalToken = null; localStorage.removeItem(GCAL_TOKEN_KEY); gcalUpdateBar(false); return; }
+    const data = await res.json();
+    gcalEvents = (data.items || []).map(ev => {
+      // Normalise to YYYY-MM-DD date string + time label
+      const startRaw = ev.start.dateTime || ev.start.date;
+      const dateStr = startRaw.slice(0,10);
+      let timeLabel = '';
+      if (ev.start.dateTime) {
+        const d = new Date(ev.start.dateTime);
+        timeLabel = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}).replace(' ','').toLowerCase();
+      } else {
+        timeLabel = 'All day';
+      }
+      return { date: dateStr, title: ev.summary || '(No title)', sub: ev.location || '', timeLabel, gcal: true };
+    });
+    // Cache for offline use
+    try { localStorage.setItem(GCAL_CACHE_KEY, JSON.stringify({ts: Date.now(), events: gcalEvents})); } catch(e){}
+    buildToday();
+  } catch(err) {
+    // Fallback to cache if network error
+    try {
+      const c = JSON.parse(localStorage.getItem(GCAL_CACHE_KEY)||'null');
+      if (c && c.events) { gcalEvents = c.events; buildToday(); }
+    } catch(e){}
+  }
+}
+
+// Merge gcalEvents into a date bucket map for quick lookup in buildToday
+function gcalForDate(dateStr) {
+  return gcalEvents.filter(e => e.date === dateStr);
+}
+
+// ─── MIDNIGHT REFRESH ─────────────────────────────────────────────────────────
+function scheduleMidnightRefresh() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  const msUntilMidnight = midnight - now;
+  setTimeout(() => {
+    buildToday();
+    updateCD();
+    updateLinkedIn();
+    if (gcalToken) gcalFetchToday(); // re-fetch fresh events each new day
+    scheduleMidnightRefresh();
+  }, msUntilMidnight);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+buildToday();
+renderPip();
+renderRangers();
+updateLinkedIn();
+gcalInit();
+scheduleMidnightRefresh();
+</script>
+</body>
+</html>
